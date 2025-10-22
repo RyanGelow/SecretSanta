@@ -1,195 +1,413 @@
 <html>
-	<head>
-			<title>Secret Santa</title>
-			<style>
-          body {
-              font-family: Arial, sans-serif;
-              background: #f5f5f5;
-              margin: 0;
-              padding: 20px;
-          }
-          .selections {
-              display: flex;
-              flex-direction: column;
-              min-height: 100vh;
-              width: 100%;
-              justify-content: center;
-              align-items: center;
-          }
-          .container {
-              background: white;
-              padding: 40px;
-              border-radius: 10px;
-              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-              max-width: 500px;
-              width: 100%;
-          }
-          h1 {
-              color: #721817;
-              text-align: center;
-              margin-bottom: 30px;
-          }
-          button {
-              background: #721817;
-              color: white;
-              border: none;
-              padding: 15px 30px;
-              font-size: 16px;
-              border-radius: 5px;
-              cursor: pointer;
-              width: 100%;
-              margin-bottom: 20px;
-          }
-          button:hover {
-              background: #5a1312;
-          }
-          .assignments {
-              margin-top: 20px;
-          }
-          .assignment {
-              background: #f9f9f9;
-              padding: 15px;
-              margin-bottom: 10px;
-              border-radius: 5px;
-              border-left: 4px solid #721817;
-          }
-          .giver {
-              font-weight: bold;
-              color: #721817;
-          }
-          .receiver {
-              color: #333;
-              margin-top: 5px;
-          }
-          .error {
-              background: #ffe6e6;
-              color: #c00;
-              padding: 15px;
-              border-radius: 5px;
-              border-left: 4px solid #c00;
-              margin-top: 20px;
-          }
-			</style>
-	</head>
-	<body>
-		<h1>🎁 Gelow Fam Secret Santa Generator</h1>
-		<button onclick="generateAssignments()">Generate Assignments</button>
-		<div id="results"></div>
-		<script>
-			const people = [
-				{
-					id: 1,
-					name: "Mark",
-					exclude: [2]
-				},
-				{
-					id: 2,
-					name: "Sara",
-					exclude: [1]
-				},
-				{
-					id: 3,
-					name: "Ryan",
-					exclude: [4]
-				},
-				{
-					id: 4,
-					name: "Holly",
-					exclude: [3]
-				},
-				{
-					id: 5,
-					name: "Chelsey",
-					exclude: [6]
-				},
-				{
-					id: 6,
-					name: "Lance",
-					exclude: [5]
-				},
-			];
-			function shuffleArray(array) {
-				const shuffled = [...array];
-				for (let i = shuffled.length - 1; i > 0; i--) {
-					const j = Math.floor(Math.random() * (i + 1));
-					[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+<head>
+	<title>Secret Santa 2025</title>
+	<style>
+      body {
+          font-family: Arial, sans-serif;
+          background: linear-gradient(135deg, #721817 0%, #a82826 100%);
+          margin: 0;
+          padding: 20px;
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      .container {
+          background: white;
+          padding: 40px;
+          border-radius: 15px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          max-width: 500px;
+          width: 100%;
+      }
+      h1 {
+          color: #721817;
+          margin-bottom: 10px;
+          text-align: center;
+      }
+      .emoji {
+          font-size: 60px;
+          margin: 20px 0;
+          text-align: center;
+      }
+      .login-form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          margin-top: 30px;
+      }
+      input, select {
+          padding: 12px;
+          border: 2px solid #ddd;
+          border-radius: 5px;
+          font-size: 16px;
+      }
+      button {
+          background: #721817;
+          color: white;
+          border: none;
+          padding: 15px;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      button:hover {
+          background: #5a1312;
+      }
+      .assignment {
+          background: #f9f9f9;
+          padding: 30px;
+          margin: 30px 0;
+          border-radius: 10px;
+          border: 3px solid #721817;
+          text-align: center;
+      }
+      .giver {
+          font-size: 24px;
+          font-weight: bold;
+          color: #721817;
+          margin-bottom: 20px;
+      }
+      .arrow {
+          font-size: 40px;
+          color: #721817;
+          margin: 10px 0;
+      }
+      .receiver {
+          font-size: 28px;
+          font-weight: bold;
+          color: #333;
+      }
+      .message {
+          color: #666;
+          margin-top: 20px;
+          font-style: italic;
+          text-align: center;
+      }
+      .error {
+          background: #ffe6e6;
+          color: #c00;
+          padding: 20px;
+          border-radius: 10px;
+          border: 2px solid #c00;
+          text-align: center;
+      }
+      .admin-panel {
+          margin-top: 30px;
+      }
+      .admin-assignment {
+          background: #f9f9f9;
+          padding: 15px;
+          margin-bottom: 10px;
+          border-radius: 5px;
+          border-left: 4px solid #721817;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      .admin-giver {
+          font-weight: bold;
+          color: #721817;
+      }
+      .admin-receiver {
+          color: #333;
+      }
+      .logout-btn {
+          background: #666;
+          margin-top: 20px;
+      }
+      .logout-btn:hover {
+          background: #444;
+      }
+      .seed-info {
+          background: #e8f4f8;
+          padding: 15px;
+          border-radius: 5px;
+          margin-bottom: 20px;
+          text-align: center;
+          color: #0066cc;
+          font-weight: bold;
+      }
+	</style>
+</head>
+<body>
+<div class="container">
+	<h1>🎅 Secret Santa 2025 🎄</h1>
+	<div id="content"></div>
+</div>
+
+<script>
+	const ADMIN_PASSWORD = "SuperSanta"; // Change this to your secret admin password
+	const YEAR = 2025; // Change this each year for different assignments
+	const VERSION = 3; // Increment this if you change the assignment logic
+
+	const people = [
+		{
+			id: 1,
+			name: "Mark",
+			code: "mark360",
+			exclude: [2]
+		},
+		{
+			id: 2,
+			name: "Sara",
+			code: "sara745",
+			exclude: [1]
+		},
+		{
+			id: 3,
+			name: "Ryan",
+			code: "ryan129",
+			exclude: [4]
+		},
+		{
+			id: 4,
+			name: "Holly",
+			code: "holly341",
+			exclude: [3]
+		},
+		{
+			id: 5,
+			name: "Chelsey",
+			code: "chelsey994",
+			exclude: [6]
+		},
+		{
+			id: 6,
+			name: "Lance",
+			code: "lance421",
+			exclude: [5]
+		},
+	];
+
+	// Seeded random number generator (consistent results based on seed)
+	class SeededRandom {
+		constructor(seed) {
+			this.seed = seed;
+		}
+
+		next() {
+			this.seed = (this.seed * 9301 + 49297) % 233280;
+			return this.seed / 233280;
+		}
+	}
+
+	function shuffleArrayWithSeed(array, seed) {
+		const rng = new SeededRandom(seed);
+		const shuffled = [...array];
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(rng.next() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+		}
+		return shuffled;
+	}
+
+	function isValidAssignment(giver, receiver) {
+		if (giver.id === receiver.id) return false;
+		if (giver.exclude && giver.exclude.includes(receiver.id)) return false;
+		return true;
+	}
+
+	function generateYearlyAssignments(year) {
+		const seed = year * 12345 + VERSION * 999; // Seed based on year
+		const maxAttempts = 1000;
+		let attempts = 0;
+
+		while (attempts < maxAttempts) {
+			attempts++;
+			const shuffledReceivers = shuffleArrayWithSeed([...people], seed + attempts);
+			const assignments = [];
+			let isValid = true;
+
+			for (let i = 0; i < people.length; i++) {
+				const giver = people[i];
+				const receiver = shuffledReceivers[i];
+
+				if (!isValidAssignment(giver, receiver)) {
+					isValid = false;
+					break;
 				}
-				return shuffled;
-			}
 
-			function isValidAssignment(giver, receiver) {
-				// Can't give to yourself
-				if (giver.id === receiver.id) return false;
-
-				// Can't give to excluded people
-				if (giver.exclude && giver.exclude.includes(receiver.id)) return false;
-
-				return true;
-			}
-
-			function generateAssignments() {
-				const maxAttempts = 1000;
-				let attempts = 0;
-				let validAssignment = null;
-
-				while (attempts < maxAttempts) {
-					attempts++;
-					const shuffledReceivers = shuffleArray([...people]);
-					const assignments = [];
-					let isValid = true;
-
-					for (let i = 0; i < people.length; i++) {
-						const giver = people[i];
-						const receiver = shuffledReceivers[i];
-
-						if (!isValidAssignment(giver, receiver)) {
-							isValid = false;
-							break;
-						}
-
-						assignments.push({
-							giver: giver,
-							receiver: receiver
-						});
-					}
-
-					if (isValid) {
-						validAssignment = assignments;
-						break;
-					}
-				}
-
-				displayResults(validAssignment, attempts);
-			}
-
-			function displayResults(assignments, attempts) {
-				const resultsDiv = document.getElementById('results');
-
-				if (!assignments) {
-					resultsDiv.innerHTML = `
-         <div class="error">
-           <strong>Error:</strong> Could not generate valid assignments after ${attempts} attempts.
-           The exclusion rules might be too restrictive.
-         </div>
-       `;
-					return;
-				}
-
-				let html = '<div class="assignments">';
-				html += `<p style="text-align: center; color: #666; margin-bottom: 15px;">Generated in ${attempts} attempt(s)</p>`;
-
-				assignments.forEach(assignment => {
-					html += `
-         <div class="assignment">
-           <div class="giver">${assignment.giver.name}</div>
-           <div class="receiver">→ gives to ${assignment.receiver.name}</div>
-         </div>
-       `;
+				assignments.push({
+					giver: giver,
+					receiver: receiver
 				});
-
-				html += '</div>';
-				resultsDiv.innerHTML = html;
 			}
-		</script>
-	</body>
+
+			if (isValid) {
+				return assignments;
+			}
+		}
+
+		return null;
+	}
+
+	function showLoginForm() {
+		const contentDiv = document.getElementById('content');
+		contentDiv.innerHTML = `
+       <div class="emoji">🎁</div>
+       <div class="login-form">
+         <select id="personSelect">
+           <option value="">Select your name...</option>
+           ${people.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+         </select>
+         <input type="password" id="codeInput" placeholder="Enter your code" />
+         <button onclick="login()">View My Assignment</button>
+         <button onclick="showAdminLogin()" style="background: #666; margin-top: 10px;">Admin Login</button>
+       </div>
+     `;
+	}
+
+	function showAdminLogin() {
+		const contentDiv = document.getElementById('content');
+		contentDiv.innerHTML = `
+       <div class="emoji">🔐</div>
+       <h2 style="text-align: center; color: #721817;">Admin Access</h2>
+       <div class="login-form">
+         <input type="password" id="adminPassword" placeholder="Enter admin password" />
+         <button onclick="adminLogin()">Login as Admin</button>
+         <button onclick="showLoginForm()" style="background: #666;">Back</button>
+       </div>
+     `;
+	}
+
+	function login() {
+		const personId = parseInt(document.getElementById('personSelect').value);
+		const code = document.getElementById('codeInput').value.trim();
+
+		if (!personId) {
+			alert('Please select your name');
+			return;
+		}
+
+		const person = people.find(p => p.id === personId);
+
+		if (person.code !== code) {
+			alert('Invalid code! Please check your code and try again.');
+			return;
+		}
+
+		showAssignment(person);
+	}
+
+	function adminLogin() {
+		const password = document.getElementById('adminPassword').value;
+
+		if (password !== ADMIN_PASSWORD) {
+			alert('Invalid admin password!');
+			return;
+		}
+
+		showAdminPanel();
+	}
+
+	function showAssignment(person) {
+		const assignments = generateYearlyAssignments(YEAR);
+
+		if (!assignments) {
+			document.getElementById('content').innerHTML = `
+         <div class="error">
+           <div class="emoji">❌</div>
+           <h2>Error</h2>
+           <p>Could not generate valid assignments. Please contact the administrator.</p>
+         </div>
+         <button onclick="showLoginForm()" style="margin-top: 20px;">Back</button>
+       `;
+			return;
+		}
+
+		const myAssignment = assignments.find(a => a.giver.id === person.id);
+
+		document.getElementById('content').innerHTML = `
+       <div class="emoji">🎁</div>
+       <div class="assignment">
+         <div class="giver">${myAssignment.giver.name}</div>
+         <div class="arrow">↓</div>
+         <div>You're giving a gift to:</div>
+         <div class="receiver">${myAssignment.receiver.name}</div>
+       </div>
+       <div class="message">
+         Keep it secret! 🤫<br>
+         Gift exchange on December 25th, 2025
+       </div>
+       <button onclick="showLoginForm()" class="logout-btn">Logout</button>
+     `;
+	}
+
+	function showAdminPanel() {
+		const assignments = generateYearlyAssignments(YEAR);
+
+		if (!assignments) {
+			document.getElementById('content').innerHTML = `
+         <div class="error">
+           <div class="emoji">❌</div>
+           <h2>Error</h2>
+           <p>Could not generate valid assignments.</p>
+         </div>
+         <button onclick="showLoginForm()" style="margin-top: 20px;">Back</button>
+       `;
+			return;
+		}
+
+		let html = `
+       <div class="emoji">👨‍💼</div>
+       <h2 style="text-align: center; color: #721817;">Admin Panel</h2>
+       <div class="seed-info">
+         Year: ${YEAR} | All assignments are consistent for this year
+       </div>
+       <div class="admin-panel">
+     `;
+
+		assignments.forEach(assignment => {
+			html += `
+         <div class="admin-assignment">
+           <div>
+             <div class="admin-giver">${assignment.giver.name}</div>
+             <div style="font-size: 12px; color: #999;">Code: ${assignment.giver.code}</div>
+           </div>
+           <div style="font-size: 20px; color: #721817;">→</div>
+           <div class="admin-receiver">${assignment.receiver.name}</div>
+         </div>
+       `;
+		});
+
+		html += `
+       </div>
+       <button onclick="showLoginForm()" class="logout-btn">Logout</button>
+     `;
+
+		document.getElementById('content').innerHTML = html;
+	}
+
+	// Initialize
+	showLoginForm();
+</script>
+</body>
 </html>
+<!--
+## **How It Works:**
+
+1. **Seeded Random Generation** - Uses the year (2025) as a seed, so assignments are always the same for that year
+2. **Individual Login** - Each person selects their name and enters their unique code
+3. **Admin Panel** - Enter admin password to see all assignments
+4. **Consistent Results** - Same assignments every time someone logs in during the year
+
+## **Setup Instructions:**
+
+1. **Customize the codes** - Change each person's `code` value to something unique
+2. **Set admin password** - Change `ADMIN_PASSWORD` at the top
+3. **Update year** - When 2026 comes, just change `YEAR` to 2026 for new assignments
+4. **Host on GitHub Pages or Netlify** (as described earlier)
+
+## **What to text people:**
+```
+🎄 Secret Santa 2025!
+
+Visit: https://yoursite.com
+
+Your personal code: mark123
+```
+Keep it secret! 🤫
+-->
+
+
